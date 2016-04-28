@@ -23,17 +23,21 @@
 #include <stdio.h>
 #include <arpa/inet.h>
 #define PKTCONTENTLINE 2
+#define MAXCONTENTLEN 100
+#define MINCONTENTLEN 3
+#define MAXPKTLEN 1500
+#define MINPKTLEN 20
 
 /*****************************************************************
  * DESCRIPTION:
- *       对报文的解析函数模块
+ *       对报文的解析函数模块,兼容数字和字符的type1，‘1’
  * INPUTS:
  *       pktdata-服务器端接收的UPD待解析的数据包
  *       pUserInfo-从用户请求数据包中获取账号密码；
  * OUTPUTS:
  *       pUserInfo-返回用户的账号密码
  * RETURNS:
- *       无返回值，直接对传入指针进行处理
+ *       如果报文为无效请求报文
  *****************************************************************/
 
 void deserialized
@@ -46,7 +50,23 @@ void deserialized
     (*len) = ntohs(* (INT16 *)len); /*字节序返回*/
     INT8 *pos  = pktdata; /* UDP数据包的流指针*/
     INT16 pktlength = *(INT16 *)(pos + TOTALLENGTHOFFSET); /*获取报文总长度*/
+    
     INT8 *pktTail = pos + pktlength; /*pktTail用来作指针pos的越界检查*/
+    
+    /*验证报文有效性*/
+    if ((*pos) != USERNAME || ((*pos) != INTUSERNAME) || ((*pos) != PASSWORD) ||  \
+        ((*pos) != INTPASSWORD) || ((*pos) != INTPREVILAGE) || ((*pos) != PREVILAGE))
+    {
+        memset(pUserInfo, 0, sizeof(userInfo));
+        return;
+    }
+    
+    if (pktlength > MAXPKTLEN || pktlength < MINPKTLEN){
+        memset(pUserInfo, 0, sizeof(userInfo));
+        return;
+    }
+
+        
         
     pos = pos + sizeof(struct pktHeader); /*指针pos指向pkt的内容*/
         
@@ -54,17 +74,35 @@ void deserialized
     {
         INT8 type = (*pos);
         INT8 contentLength = * (INT8 *)(pos + CONTENTTYPEOFFSET); /*解析报文正文的type8*/
+        /*验证报文正文长度*/
+        if (contentLength < MINCONTENTLEN || contentLength > MAXCONTENTLEN)
+        {
+            memset(pUserInfo, 0, sizeof(userInfo));
+            return;
+        }
         
         /* 根据type类型解析报文内容，输出到userInfo中*/
         switch (type) 
         {
+            case INTUSERNAME:
+                memcpy(pUserInfo->name, pos + CONTENTHEADLEN, contentLength - CONTENTHEADLEN);
+                pos += contentLength;
+                break;
             case USERNAME:
                 memcpy(pUserInfo->name, pos + CONTENTHEADLEN, contentLength - CONTENTHEADLEN);
+                pos += contentLength;
+                break;
+            case INTPASSWORD:
+                memcpy(pUserInfo->password, pos + CONTENTHEADLEN, contentLength - CONTENTHEADLEN);
                 pos += contentLength;
                 break;
             case PASSWORD:
                 memcpy(pUserInfo->password, pos + CONTENTHEADLEN, contentLength - CONTENTHEADLEN);
                 pos += contentLength;
+                break;
+            case INTPREVILAGE:
+                pUserInfo-> previlage = * (INT8 *)(pos + CONTENTHEADLEN);
+                pos = pos + contentLength;
                 break;
             case PREVILAGE:
                 pUserInfo-> previlage = * (INT8 *)(pos + CONTENTHEADLEN);
@@ -76,6 +114,7 @@ void deserialized
         }
     }
     return;
+    
 }
 
 /*****************************************************************
@@ -143,7 +182,7 @@ INT16 clientSerialized
 INT16 serverSerialized
 (
  char *pktdata,
- pktcontent *pcontent,int code
+ pktcontent *pcontent,INT8 code
 )
 {
     pktHeader header; /*报文头部*/

@@ -37,6 +37,9 @@
 #define PKT_REQUEST 1
 #define PKT_ACCESS 2
 #define PKT_REJECT 3
+#define INTUSERNAME 1
+#define INTPASSWORD 2
+#define INTPREVILAGE 3
 
 /*通用数据类型定义*/
 typedef char INT8; 
@@ -82,9 +85,9 @@ typedef struct userInfo{
     INT8 previlage;
 }userInfo;
 
-void deserialized(char *pktdata,userInfo *pUserInfo);
-INT16 clientSerialized(char *pktdata,pktcontent *pcontent);
-INT16 serverSerialized(char *pktdata,pktcontent *pcontent, int code);
-void mini_encrypt(char *passWord,char *hash);
+void deserialized(INT8 *pktdata,userInfo *pUserInfo);
+INT16 clientSerialized(INT8 *pktdata,pktcontent *pcontent);
+INT16 serverSerialized(INT8 *pktdata,pktcontent *pcontent, INT8 code);
+void mini_encrypt(INT8 *passWord,INT8 *hash);
 
 #endif
