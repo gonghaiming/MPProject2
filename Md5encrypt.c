@@ -35,7 +35,11 @@
  *       NULL
  *****************************************************************/
 
-void encrypt(INT8 *passWord,INT8 *hash){
+void encrypt
+(
+ INT8 *passWord,
+ INT8 *hash)
+{
 	
 	MD5_CTX ctx;
 	UCHAR md5[16];

@@ -91,7 +91,11 @@ void deserialized
  *        LEN-客户端序列化后的数据包长度
  *****************************************************************/
 
-INT16 clientSerialized(char *pktdata,pktcontent *pcontent)
+INT16 clientSerialized
+(
+ char *pktdata,
+ pktcontent *pcontent
+ )
 {
     
     pktHeader header;
@@ -137,7 +141,12 @@ INT16 clientSerialized(char *pktdata,pktcontent *pcontent)
  *
  *****************************************************************/
 
-INT16 serverSerialized(char *pktdata,pktcontent *pcontent,int code){
+INT16 serverSerialized
+(
+ char *pktdata,
+ pktcontent *pcontent,int code
+)
+{
     pktHeader header; /*报文头部*/
     INT8 *pos = pktdata; /*报文流指针*/
     INT8 type  = pcontent->type;

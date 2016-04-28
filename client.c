@@ -36,7 +36,7 @@ INT32 flag = 0;
 #if 0
 void *countTime(void* ptr)
 {
-    while(1)
+    while (1)
     {
         //sleep(5000);
 	if (flag == 0)
@@ -61,7 +61,7 @@ INT32 main(INT32 argc, INT8 *argv[])
     
 /*检验是否键入服务器地址*/
 #if 0
-	if(argc != 2)
+	if (argc != 2)
 	{
 		printf("未输入服务器地址！");
 		return 0;
@@ -105,7 +105,7 @@ INT32 main(INT32 argc, INT8 *argv[])
 		bzero(&sendBuf, strlen(sendBuf));
 		INT16 pktLen = clientSerialized(sendBuf, pcontent);
 		
-		for(int i =0 ; i < pktLen; ++i)
+		for (int i =0 ; i < pktLen; ++i)
 			printf("string: %x\n", sendBuf[i]);
         
         /*发送报文*/
@@ -121,7 +121,7 @@ INT32 main(INT32 argc, INT8 *argv[])
 		addrLen = sizeof(struct sockaddr);
 		sendSize = recvfrom(sockFd, sendBuf, BUFSIZE, 0, (struct sockaddr *)(&serverAddr), &addrLen);
                 sendBuf[sendSize] = 0;
-		for(int i =0 ; i < pktLen; ++i)
+		for (int i =0 ; i < pktLen; ++i)
 			printf("string: %x\n", sendBuf[i]);
 
 		userInfo pUserInfo;
