@@ -24,8 +24,21 @@
 #include <unistd.h>
 #include <string.h>
 
+/*序列化模块中使用的常量*/
+#define HEADOFFSET 20 /*UDP数据包正文偏移*/
+#define TOTALLENGTHOFFSET 2 /*包长度偏移地址*/
+#define CONTENTHEADLEN 2
+#define CONTENTTYPEOFFSET 1
+#define USERNAME '1'
+#define PASSWORD '2'
+#define PREVILAGE '3'
+#define AUTHLENTH 16 /*校验码长度*/
+#define ID 1 /*报文中的ID项默认值*/
+#define PKT_REQUEST 1
+#define PKT_ACCESS 2
+#define PKT_REJECT 3
 
-
+/*通用数据类型定义*/
 typedef char INT8; 
 typedef short INT16; 
 typedef int INT32; 

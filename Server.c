@@ -28,6 +28,8 @@
 #include <netinet/in.h>
 #include <mysql.h>
 
+#define PREVILAGECONTENTLENGTH 3
+
 #define PORT 8888
 #define BUFSIZE 2000	/*定义接收缓冲区大小*/
 
@@ -78,17 +80,17 @@ INT32 main(INT32 argc, INT8 *argv[])
 		retValue = authentication(pUserInfo.name, pUserInfo.password);
 		if (retValue == '0')
 		{
-			code = 3;
+			code = PKT_REJECT;
 		}
 		else
 		{
-			code = 2;
+			code = PKT_ACCESS;
 		}
 		
         /*回应报文*/
 		pktcontent pcontent;
-		pcontent.type = '3';
-		pcontent.lengthItem = 3;
+		pcontent.type = PREVILAGE;
+		pcontent.lengthItem = PREVILAGECONTENTLENGTH;
 		pcontent.value[0] = retValue;
 		
 		bzero(recvBuf, sizeof(recvBuf));

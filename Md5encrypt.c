@@ -1,5 +1,28 @@
+
+/*****************************************************************
+ * Copyright (C) 2010 Maipu Communication Technology Co.,Ltd.*
+ ******************************************************************
+ * MD5encrypt.c
+ *
+ * DESCRIPTION:
+ *         加密模块
+ * AUTHOR:
+ *         mr_zhao,mr_gong,mr_hu
+ * CREATED DATE:
+ *         2016.4.28
+ * REVISION:
+ * 1.0
+ *
+ * MODIFICATION HISTORY
+ * --------------------
+ * $Log:$
+ * *****************************************************************/
+
+
 #include "common.h"
 #include <openssl/md5.h>
+
+#define MD5LENGTH 16
 
 /*****************************************************************
  * DESCRIPTION:
@@ -12,7 +35,7 @@
  *       NULL
  *****************************************************************/
 
-void encrypt(char *passWord,char *hash){
+void encrypt(INT8 *passWord,INT8 *hash){
 	
 	MD5_CTX ctx;
 	UCHAR md5[16];
@@ -32,7 +55,7 @@ void encrypt(char *passWord,char *hash){
     printf("length:%d\n", (int)strlen(passWord));
     printf("md5:%s\n", md5);
     
-    for(; transNum < 16; ++transNum)
+    for(; transNum < MD5LENGTH; ++transNum)
     {
         sprintf(tmp, "%02x", md5[transNum]);
         strcat(md5x, tmp);
