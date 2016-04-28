@@ -1,6 +1,28 @@
+/*****************************************************************
+ * Copyright (C) 2010 Maipu Communication Technology Co.,Ltd.*
+ ******************************************************************
+ * server.C
+ *
+ * DESCRIPTION:
+ * 客户端监听端口，接收到报文后开始解析；
+ * 链接书库认证信息，返回用户认证情况和权限；
+ *
+ * AUTHOR:
+ * MR_GONG、MR_ZHAO、MR_HU
+ *
+ * CREATED DATE:
+ * 2016.4.28
+ *
+ * REVISION:
+ * 1.0
+ *
+ * MODIFICATION HISTORY
+ * --------------------
+ * $Log:$
+ * *****************************************************************/
+
 #include "common.h"
 #include "auth.h"
-
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -10,10 +32,7 @@
 #define BUFSIZE 2000	/*定义接收缓冲区大小*/
 
 
-
-
-
-int main(int argc, char *argv[])
+INT32 main(INT32 argc, INT8 *argv[])
 {
 	INT32 sockFd;
 	struct sockaddr_in serverAddr;
@@ -23,10 +42,10 @@ int main(int argc, char *argv[])
 	INT32 recvSize;	/*接收到的报文大小*/
 
 	userInfo pUserInfo;
-//	MYSQL *conn;
-//	connectSQL(&conn);
+    //MYSQL *conn;
+    //connectSQL(&conn);
 	connectSQL(&connection);
-//	authentication("hello", "111");
+    //authentication("hello", "111");
 	authentication("hello", "202cb962ac59075b964b07152d234b70");
 	
 	/*套接字*/
@@ -47,10 +66,12 @@ int main(int argc, char *argv[])
 		addrLen = sizeof(struct sockaddr);
 		bzero(recvBuf, sizeof(recvBuf));
 		
+        /*接收数据*/
 		recvSize = recvfrom(sockFd, recvBuf, BUFSIZE, 0, (struct sockaddr *)(&clientAddr), &addrLen);
 		recvBuf[recvSize] = 0;
 		printf("recv: %s\n", recvBuf);
 		
+        /*用户信息的分析和认证*/
 		INT8 retValue;
 		INT8 code;
 		deserialized(recvBuf, &pUserInfo);
@@ -64,6 +85,7 @@ int main(int argc, char *argv[])
 			code = 2;
 		}
 		
+        /*回应报文*/
 		pktcontent pcontent;
 		pcontent.type = '3';
 		pcontent.lengthItem = 3;
@@ -75,6 +97,7 @@ int main(int argc, char *argv[])
 		/*返送回客户端*/
 		sendto(sockFd, recvBuf, pkgLen, 0, (struct sockaddr *)(&clientAddr), addrLen);
 	}
+    
 	close(sockFd);
 	mysql_close(connection);
 

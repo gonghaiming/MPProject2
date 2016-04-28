@@ -1,3 +1,27 @@
+/*****************************************************************
+ * Copyright (C) 2010 Maipu Communication Technology Co.,Ltd.*
+ ******************************************************************
+ * client.c
+ *
+ * DESCRIPTION:
+ * 客户端键入用户名和密码，处理用户名和密码报文的封装；
+ * 等待服务器回应，超时自动重连，五次重连后放弃；
+ * 连接成功或失败回应用户权限；
+ *
+ * AUTHOR:
+ * MR_GONG、MR_ZHAO、MR_HU
+ *
+ * CREATED DATE:
+ * 2016.4.28
+ *
+ * REVISION:
+ * 1.0
+ *
+ * MODIFICATION HISTORY
+ * --------------------
+ * $Log:$
+ * *****************************************************************/
+
 #include "common.h"
 
 #include <sys/socket.h>
@@ -23,17 +47,19 @@ void *countTime(void* ptr)
 }
 #endif
 
-int main(int argc, char *argv[])
+INT32 main(INT32 argc, INT8 *argv[])
 {
 	INT32 threadRe;
 	INT32 ret;
 
-INT32 addrLen ;
+    INT32 addrLen ;
  
 	INT32 sockFd;
 	INT8 sendBuf[BUFSIZE];
 	INT8 passWord[BUFSIZE];
 	struct sockaddr_in serverAddr;
+    
+/*检验是否键入服务器地址*/
 #if 0
 	if(argc != 2)
 	{
@@ -41,7 +67,8 @@ INT32 addrLen ;
 		return 0;
 	}
 #endif	
-
+    
+    /*创建套接字*/
 	sockFd = socket(AF_INET, SOCK_DGRAM, 0);
 
 	bzero(&serverAddr, sizeof(struct sockaddr_in));
@@ -54,8 +81,7 @@ INT32 addrLen ;
 	{
 		printf("name:");
 
-		/*清除缓冲区*/
-		bzero(&sendBuf, strlen(sendBuf));
+		bzero(&sendBuf, strlen(sendBuf));/*清除缓冲区*/
 
 		bzero(&passWord, BUFSIZE);
 
@@ -71,7 +97,8 @@ INT32 addrLen ;
 
 		INT8 hash[33] = {'\0'};
 		encrypt(passWord, hash);
-	
+        
+        /*封装报文*/
 		pktcontent pcontent[2] = {{'1', nameLen + 2}, {'2', 34}};
 		strcpy(pcontent[0].value, sendBuf);
 		strcpy(pcontent[1].value, hash);
@@ -80,12 +107,16 @@ INT32 addrLen ;
 		
 		for(int i =0 ; i < pktLen; ++i)
 			printf("string: %x\n", sendBuf[i]);
+        
+        /*发送报文*/
 		sendto(sockFd, sendBuf, pktLen, 0, (struct sockaddr *)(&serverAddr), sizeof(struct sockaddr));
 		bzero(sendBuf, BUFSIZE);
 
 
 		//ret = pthread_create(&threadRe, NULL, countTime, NULL);
-
+        
+        
+        /*接收回应报文*/
 		INT32 sendSize;
 		addrLen = sizeof(struct sockaddr);
 		sendSize = recvfrom(sockFd, sendBuf, BUFSIZE, 0, (struct sockaddr *)(&serverAddr), &addrLen);

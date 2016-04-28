@@ -1,5 +1,6 @@
 #ifndef __AUTH_H
 #define __AUTH_H
+
 #include "common.h"
 #include <mysql.h>
 
