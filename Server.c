@@ -48,7 +48,7 @@ INT32 main(INT32 argc, INT8 *argv[])
     //connectSQL(&conn);
 	connectSQL(&connection);
     //authentication("hello", "111");
-	authentication("hello", "202cb962ac59075b964b07152d234b70");
+	authentication("hello", "000000");
 	
 	/*套接字*/
 	sockFd = socket(AF_INET, SOCK_DGRAM, 0);
