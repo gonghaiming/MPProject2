@@ -77,6 +77,7 @@ INT32 main(INT32 argc, INT8 *argv[])
 		INT8 retValue;
 		INT8 code;
 		deserialized(recvBuf, &pUserInfo);
+        
 		retValue = authentication(pUserInfo.name, pUserInfo.password);
 		if (retValue == '0')
 		{

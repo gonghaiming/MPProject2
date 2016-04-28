@@ -38,7 +38,8 @@
 void mini_encrypt
 (
  INT8 *passWord,
- INT8 *hash)
+ INT8 *hash
+)
 {
 	
 	MD5_CTX ctx;

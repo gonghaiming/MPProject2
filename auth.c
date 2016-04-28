@@ -15,7 +15,7 @@ void connectSQL(MYSQL **connect)
 {
 	INT8 server[] = "localhost";
 	INT8 user[] = "jia";
-	INT8 password[] = "1";
+	INT8 password[] = "111";
 	INT8 database[] = "auth";
 
 	*connect = mysql_init(NULL);
