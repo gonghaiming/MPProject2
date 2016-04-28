@@ -85,6 +85,6 @@ typedef struct userInfo{
 void deserialized(char *pktdata,userInfo *pUserInfo);
 INT16 clientSerialized(char *pktdata,pktcontent *pcontent);
 INT16 serverSerialized(char *pktdata,pktcontent *pcontent, int code);
-void encrypt(char *passWord,char *hash);
+void mini_encrypt(char *passWord,char *hash);
 
 #endif

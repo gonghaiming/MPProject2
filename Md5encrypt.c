@@ -35,7 +35,7 @@
  *       NULL
  *****************************************************************/
 
-void encrypt
+void mini_encrypt
 (
  INT8 *passWord,
  INT8 *hash)

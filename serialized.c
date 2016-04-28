@@ -44,20 +44,20 @@ void deserialized
 {
     INT16 * len = (INT16 *)(pktdata + TOTALLENGTHOFFSET);
     (*len) = ntohs(* (INT16 *)len); /*字节序返回*/
-    
     INT8 *pos  = pktdata; /* UDP数据包的流指针*/
     INT16 pktlength = *(INT16 *)(pos + TOTALLENGTHOFFSET); /*获取报文总长度*/
     INT8 *pktTail = pos + pktlength; /*pktTail用来作指针pos的越界检查*/
-    
+        
     pos = pos + sizeof(struct pktHeader); /*指针pos指向pkt的内容*/
-    
+        
     while (pos != pktTail)
     {
         INT8 type = (*pos);
         INT8 contentLength = * (INT8 *)(pos + CONTENTTYPEOFFSET); /*解析报文正文的type8*/
         
         /* 根据type类型解析报文内容，输出到userInfo中*/
-        switch (type) {
+        switch (type) 
+        {
             case USERNAME:
                 memcpy(pUserInfo->name, pos + CONTENTHEADLEN, contentLength - CONTENTHEADLEN);
                 pos += contentLength;
@@ -74,7 +74,6 @@ void deserialized
                 printf("cannot get the correct content from the pakage");
                 break;
         }
-        
     }
     return;
 }

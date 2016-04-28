@@ -1,15 +1,16 @@
 CC := gcc
 //FLAGS := -g -Wall
 FLAGS := -g
-*.o: *.c *.h
-	$(CC) $(FLAGS) -c $^ -I/usr/include/mysql -lmysqlclient -lcrypto
-server: Server.o auth.o deserialized.o serialized.o 
-	$(CC) -o server Server.o auth.o deserialized.o serialized.o -lmysqlclient
-client: client.o auth.o deserialized.o serialized.o Md5encrypt.o
-	$(CC) -o client $^ -lcrypto -lmysqlclient
-	
+LDFLAGS = -L /usr/local/mysql/lib -L /usr/local/Cellar/openssl/1.0.2a-1/lib -lmysqlclient -lcrypto
 
+
+*.o: *.c
+	$(CC) $(FLAGS) -c $^ $(LDFLAGS)
+server: Server.o auth.o  serialized.o 
+	$(CC) -o server Server.o auth.o serialized.o $(LDFLAGS) 
+client: client.o auth.o serialized.o Md5encrypt.o 
+	$(CC) -o client $^ $(LDFLAGS)
 clean:
-	rm *.o
+	rm *.o client server
 
 
